@@ -6,7 +6,16 @@ const {google} = require('googleapis');
 const app = express();
 
 
-app.get('/',async (req,res)=>{
+app.set('view engine', 'ejs');
+
+app.use(express.urlencoded({extended: true}));
+
+app.get('/', (req,res)=>{
+  res.render("index");
+})
+
+app.post('/',async (req,res)=>{
+  const{name,phone, line}=req.body;
 
   const auth = new google.auth.GoogleAuth({
     keyFile:"credentials.json",
@@ -38,12 +47,12 @@ app.get('/',async (req,res)=>{
     valueInputOption: "USER_ENTERED",
     resource:{
       values:[
-        ["大木博士","092737182","jj333"]
+        [name,phone,line]
       ]
     }
   })
 
-  res.send(getRows.data);
+  res.send('成功送出！');
 })
 
 app.listen(1337,(req,res)=>console.log('running on 1337'));
